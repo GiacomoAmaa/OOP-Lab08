@@ -2,8 +2,16 @@ package it.unibo.oop.lab.mvc;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+
+import java.awt.BorderLayout;
 
 /**
  * A very simple program using a graphical interface.
@@ -35,10 +43,42 @@ public final class SimpleGUI {
      */
 
     /**
+     * @param ctrl controller for string I/O
      * builds a new {@link SimpleGUI}.
      */
-    public SimpleGUI() {
-
+    public SimpleGUI(final ControllerImpl ctrl) {
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new BorderLayout());
+        final JPanel panel2 = new JPanel();
+        panel1.setLayout(new BorderLayout());
+        panel1.add(panel2, BorderLayout.SOUTH);
+        final JTextField tf = new JTextField();
+        final JTextArea ta = new JTextArea();
+        ta.setEditable(false);
+        final JButton print = new JButton("Print");
+        final JButton show = new JButton("Show history");
+        panel1.add(tf, BorderLayout.NORTH);
+        panel1.add(ta, BorderLayout.CENTER);
+        panel2.add(print, BorderLayout.CENTER);
+        panel2.add(show, BorderLayout.LINE_END);
+        frame.setContentPane(panel1);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        /**
+         * Handlers
+         */
+        print.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                ctrl.setNextToPrint(tf.getText());
+                ctrl.printNext();
+            }
+        });
+        show.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(final ActionEvent e) {
+                System.out.println(ctrl.getPrinted());
+            }
+         });
         /*
          * Make the frame half the resolution of the screen. This very method is
          * enough for a single screen setup. In case of multiple monitors, the
@@ -60,6 +100,13 @@ public final class SimpleGUI {
          * on screen. Results may vary, but it is generally the best choice.
          */
         frame.setLocationByPlatform(true);
+        frame.setVisible(true);
+    }
+    /**
+     * @param args ignored
+     */
+    public static void main(final String... args) {
+       new SimpleGUI(new ControllerImpl());
     }
 
 }
